@@ -6,10 +6,13 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.INFO)
 load_dotenv()
 
 
-def scrapper(username_scrape):
+def insta_scrapper(username_scrape):
+    """Scrapes all media, followers, followee, post likes & post comments"""
     logger.info("Inside Scrapper function")
     try:
         instance = instaloader.Instaloader(save_metadata=False, compress_json=False)
@@ -110,7 +113,9 @@ def scrapper(username_scrape):
 
 
 # function to collect username for scraping the data
-def data(name):
+def scrape_followers(name):
+    """Scrapes followers for a particular account"""
+    logger.info(f"Scraping {name}")
     instance = instaloader.Instaloader(save_metadata=False, compress_json=False, )
     instance.login(user=os.environ['INSTA_USERNAME_2'], passwd=os.environ['INSTA_PASS_2'])
     profile = instaloader.Profile.from_username(instance.context, username=name)
@@ -120,21 +125,20 @@ def data(name):
     logger.info("Getting followers")
     for followee in profile.get_followers():
         follow_list.append(followee.username)
-        file = open("names.csv", "a+")
+        file = open("data/instagram/instagram_names.csv", "a+")
         file.write(follow_list[count])
         file.write("\n")
         file.close()
         count = count + 1
+    return follow_list
 
 
 if __name__ == '__main__':
-    try:
-        data("cristiano")  # calling the function to scrap data
-    except Exception as e:
-        print(e)
-
-    list = pd.read_csv("names.csv")
-    # print(list["name"])
-    for name in list["name"]:
-        scrapper(name)
-        print("done")
+    # logger.info("Getting followers of cristiano")
+    # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
+    # logger.info("Done")
+    follower_list = list(pd.read_csv("data/instagram/instagram_names.csv")["username"])
+    for name in follower_list:
+        logger.info(f"Scrapping {name}")
+        insta_scrapper(name)
+        logger.info(f"Scraped {name}")
