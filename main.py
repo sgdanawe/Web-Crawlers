@@ -5,7 +5,7 @@ import pandas as pd
 def scrapper(Username_scrap):
     try:
        instance = instaloader.Instaloader(save_metadata=False, compress_json=False,)
-       YOUR_USERNAME = "tanishsharma869"
+       YOUR_USERNAME = "tg306277"
        YOUR_PASSWORD = "qwerty54321"
 
        # Username_scrap = input("Give account's username you want to scrap: ")
