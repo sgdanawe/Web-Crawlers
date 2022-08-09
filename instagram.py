@@ -4,6 +4,8 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 import logging
+import jsonlines
+import json
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -21,55 +23,49 @@ def insta_scrapper(username_scrape):
         profile = instaloader.Profile.from_username(instance.context, username=username_scrape)
         instance.download_profile(profile_name=username_scrape, download_tagged=True)
 
-        file = open(f"{username_scrape}/Genral_Details.txt", "a+", encoding="utf-8")
+        logger.info("Getting general details")
+        x = {"Username": profile.username,
+             "UserId": profile.userid,
+             "Number of posts": str(profile.mediacount),
+             "Number of Follwers": str(profile.followers),
+             "Number of Following": str(profile.followees),
+             "Bio": profile.biography
+             }
+        y = str(json.dumps(x))
+        with open(f"{username_scrape}/general_details.json", "a",encoding="utf-8") as writer:  # for writing
+            writer.write(y)
+        logger.info("DONE")
 
-        file.write(f"User_Name: {profile.username}")
-        file.write("\n")
-        file.write((f"User_Id: {str(profile.userid)}"))
-        file.write("\n")
-        file.write(f"Number_ of_Post: {str(profile.mediacount)}")
-        file.write("\n")
-        file.write(f"Number_of_Followers: {str(profile.followers)}")
-        file.write("\n")
-        file.write(f"Number_of_Followings: {str(profile.followees)}")
-        file.write("\n")
-        file.write(profile.biography)
-        file.write("/n")
-        file.close()
-        file.close()
-        print("Gernal details text file has been made\n")
-
-        # list of all the follwers and followingt
-        follow_list = []
-        count = 0
-        logger.info("Getting followers")
-        for followee in profile.get_followers():
-            follow_list.append(followee.username)
-            file = open(f"{username_scrape}/followers.csv", "a+")
-            file.write(follow_list[count])
-            file.write("\n")
-            file.close()
-            count = count + 1
-            if count % 1000 == 0:
-                time.sleep(10)
-                print("break over")
-        print("Followers lost have been made\n")
-        following_list = []
-        count = 0
-        logger.info("Getting followees")
-        for followee in profile.get_followees():
-            following_list.append(followee.username)
-            file = open(f"{username_scrape}/followingss.csv", "a+")
-            file.write(following_list[count])
-            file.write("\n")
-            file.close()
-            count = count + 1
-            if count % 1000 == 0:
-                time.sleep(1000)
-        print("Following list have been made\n")
+        ##list of all the follwers and followingt
+        # follow_list = []
+        # count = 0
+        # logger.info("Getting followers")
+        # for followee in profile.get_followers():
+        #     follow_list.append(followee.username)
+        #     file = open(f"{username_scrape}/followers.csv", "a+")
+        #     file.write(follow_list[count])
+        #     file.write("\n")
+        #     file.close()
+        #     count = count + 1
+        #     if count % 1000 == 0:
+        #         time.sleep(10)
+        #         print("break over")
+        # print("Followers lost have been made\n")
+        # following_list = []
+        # count = 0
+        # logger.info("Getting followees")
+        # for followee in profile.get_followees():
+        #     following_list.append(followee.username)
+        #     file = open(f"{username_scrape}/followingss.csv", "a+")
+        #     file.write(following_list[count])
+        #     file.write("\n")
+        #     file.close()
+        #     count = count + 1
+        #     if count % 1000 == 0:
+        #         time.sleep(1000)
+        # print("Following list have been made\n")
         # To collect the list of all the liker and commenters
-        a = 1
-        logger.info("Getting posts")
+        logger.info("Getting posts likers and commnters")
         for post in profile.get_posts():
             # print(post)
             list_likers = []
@@ -78,37 +74,53 @@ def insta_scrapper(username_scrape):
             post_comments = post.get_comments()
 
             n = 0
-            logger.info(f"Getting likes for {post.title}")
+            count = 0
+            logger.info(f"Getting likes for {post_likes}")
             for like in post_likes:
                 list_likers.append((like.username))
-                file = open(f"{username_scrape}/likes_post.txt", "a+")
-                file.write(list_likers[n])
+                likers_file = open(f"{username_scrape}/likes_post.csv", "a+")
+                likers_file.write(list_likers[n])
                 n += 1
-                if count % 1000 == 0:
-                    time.sleep(1000)
-                file.write("\n")
-            file.close()
-            file = open(f"{username_scrape}/counts of like in Post.txt", "a+")
-            file.write(f"Count of post_{a}: {n}")
-            file.write("\n")
-            file.close()
+                # if count % 1000 == 0:
+                #     time.sleep(1000)
+                likers_file.write("\n")
+                likers_file.close()
+            x = {f"Count of post_{post_likes}": n}
+            y = str(json.dumps(x))
+            count_comments = open(f"{username_scrape}/counts of likes in Post.json", "a+")
+            count_comments.write(y)
+            count_comments.write("\n")
+            count_comments.close()
             n = 0
+            count = 0
+            logger.info(f"Getting comments for {post_comments}")
             for comment in post_comments:
                 list_comment.append((comment.owner.username))
-                file = open(f"{username_scrape}/comment_post.txt", "a+")
-                file.write(list_comment[n])
-                if count % 1000 == 0:
-                    time.sleep(1000)
+                comment_file = open(f"{username_scrape}/comment_post.csv", "a+")
+                comment_file.write(list_comment[n])
+                # if count % 1000 == 0:
+                #     time.sleep(1000)
                 n += 1
-            file = open(f"{username_scrape}/counts of comments in Post.txt", "a+")
-            file.write(f"Count of post_{a}: {n}")
-            file.write("\n")
-            file.close()
-            a += 1
-
-        # print("list of all the likers and commenters have been made\n")
+                comment_file.write("\n")
+                comment_file.close()
+            x = {f"Count of post_{post_comments}": n}
+            y = str(json.dumps(x))
+            count_comments = open(f"{username_scrape}/counts of comments in Post.json", "a+")
+            count_comments.write(y)
+            count_comments.write("\n")
+            count_comments.close()
+        logger.info("Removing Duplicates from files")
+        df_likers = pd.read_csv(f"{username_scrape}/likes_post.csv", header=None)
+        df_likers.rename(columns={0: "Username"}, inplace=True)
+        df_likers = df_likers.drop_duplicates(subset = "Username")
+        df_likers.to_csv(f"{username_scrape}/likes_post.csv",index = False)
+        df_commnets = pd.read_csv(f"{username_scrape}/comment_post.csv", header = None)
+        df_commnets.rename(columns={0:"Username"}, inplace=True)
+        df_commnets = df_commnets.drop_duplicates(subset = "Username")
+        df_commnets.to_csv(f"{username_scrape}/comment_post.csv",index = False)
+        logger.info("list of all the likers and commenters have been made\n")
     except Exception as e:
-        print(e)
+        logger.warning(e)
         print(f"ERROR for {username_scrape}")
 
 
@@ -142,3 +154,6 @@ if __name__ == '__main__':
         logger.info(f"Scrapping {name}")
         insta_scrapper(name)
         logger.info(f"Scraped {name}")
+
+
+
