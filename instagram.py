@@ -1,10 +1,8 @@
-import time
 import instaloader
 import pandas as pd
 from dotenv import load_dotenv
 import os
 import logging
-import jsonlines
 import json
 
 logger = logging.getLogger(__name__)
@@ -17,11 +15,11 @@ def insta_scrapper(username_scrape):
     """Scrapes all media, followers, followee, post likes & post comments"""
     logger.info("Inside Scrapper function")
     try:
-        instance = instaloader.Instaloader(save_metadata=False, compress_json=False)
+        instance = instaloader.Instaloader(save_metadata=False, compress_json=False,post_metadata_txt_pattern=False,max_connection_attempts=5)
 
         instance.login(user=os.environ['INSTA_USERNAME_1'], passwd=os.environ['INSTA_PASS_1'])
         profile = instaloader.Profile.from_username(instance.context, username=username_scrape)
-        instance.download_profile(profile_name=username_scrape, download_tagged=True)
+        instance.download_profile(profile_name=username_scrape)
 
         logger.info("Getting general details")
         x = {"Username": profile.username,
@@ -145,15 +143,17 @@ def scrape_followers(name):
     return follow_list
 
 
-if __name__ == '__main__':
-    # logger.info("Getting followers of cristiano")
-    # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
-    # logger.info("Done")
-    follower_list = list(pd.read_csv("data/instagram/instagram_names.csv")["username"])
-    for name in follower_list:
-        logger.info(f"Scrapping {name}")
-        insta_scrapper(name)
-        logger.info(f"Scraped {name}")
+# if __name__ == '__main__':
+#     # logger.info("Getting followers of cristiano")
+#     # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
+#     # logger.info("Done")
+#     follower_list = list(pd.read_csv("data/Instagram/instagram_names.csv")["username"])
+#     for name in follower_list:
+#         logger.info(f"Scrapping {name}")
+#         insta_scrapper(name)
+#         logger.info(f"Scraped {name}")
+
+insta_scrapper("_ankush_ag")
 
 
 
