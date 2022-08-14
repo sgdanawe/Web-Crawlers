@@ -143,17 +143,15 @@ def scrape_followers(name):
     return follow_list
 
 
-# if __name__ == '__main__':
-#     # logger.info("Getting followers of cristiano")
-#     # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
-#     # logger.info("Done")
-#     follower_list = list(pd.read_csv("data/Instagram/instagram_names.csv")["username"])
-#     for name in follower_list:
-#         logger.info(f"Scrapping {name}")
-#         insta_scrapper(name)
-#         logger.info(f"Scraped {name}")
-
-insta_scrapper("_ankush_ag")
+if __name__ == '__main__':
+    # logger.info("Getting followers of cristiano")
+    # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
+    # logger.info("Done")
+    follower_list = list(pd.read_csv("data/Instagram/instagram_names.csv")["username"])
+    for name in follower_list:
+        logger.info(f"Scrapping {name}")
+        insta_scrapper(name)
+        logger.info(f"Scraped {name}")
 
 
 
