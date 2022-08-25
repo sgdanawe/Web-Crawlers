@@ -34,34 +34,34 @@ def insta_scrapper(username_scrape):
             writer.write(y)
         logger.info("DONE")
 
-        ##list of all the follwers and followingt
-        # follow_list = []
-        # count = 0
-        # logger.info("Getting followers")
-        # for followee in profile.get_followers():
-        #     follow_list.append(followee.username)
-        #     file = open(f"{username_scrape}/followers.csv", "a+")
-        #     file.write(follow_list[count])
-        #     file.write("\n")
-        #     file.close()
-        #     count = count + 1
-        #     if count % 1000 == 0:
-        #         time.sleep(10)
-        #         print("break over")
-        # print("Followers lost have been made\n")
-        # following_list = []
-        # count = 0
-        # logger.info("Getting followees")
-        # for followee in profile.get_followees():
-        #     following_list.append(followee.username)
-        #     file = open(f"{username_scrape}/followingss.csv", "a+")
-        #     file.write(following_list[count])
-        #     file.write("\n")
-        #     file.close()
-        #     count = count + 1
-        #     if count % 1000 == 0:
-        #         time.sleep(1000)
-        # print("Following list have been made\n")
+        #list of all the follwers and followingt
+        follow_list = []
+        count = 0
+        logger.info("Getting followers")
+        for followee in profile.get_followers():
+            follow_list.append(followee.username)
+            file = open(f"{username_scrape}/followers.csv", "a+")
+            file.write(follow_list[count])
+            file.write("\n")
+            file.close()
+            count = count + 1
+            if count % 1000 == 0:
+                time.sleep(10)
+                print("break over")
+        print("Followers lost have been made\n")
+        following_list = []
+        count = 0
+        logger.info("Getting followees")
+        for followee in profile.get_followees():
+            following_list.append(followee.username)
+            file = open(f"{username_scrape}/followingss.csv", "a+")
+            file.write(following_list[count])
+            file.write("\n")
+            file.close()
+            count = count + 1
+            if count % 1000 == 0:
+                time.sleep(1000)
+        print("Following list have been made\n")
         # To collect the list of all the liker and commenters
         logger.info("Getting posts likers and commnters")
         for post in profile.get_posts():
@@ -147,11 +147,16 @@ if __name__ == '__main__':
     # logger.info("Getting followers of cristiano")
     # follower_list = scrape_followers("cristiano")  # calling the function to scrap data
     # logger.info("Done")
-    follower_list = list(pd.read_csv("data/Instagram/instagram_names.csv")["username"])
+    Follower_data = pd.read_csv("data/Instagram/data.csv")
+    # print(Follower_data["username"][0])
+    follower_list = list(Follower_data["username"])
+    count = 0
     for name in follower_list:
         logger.info(f"Scrapping {name}")
         insta_scrapper(name)
         logger.info(f"Scraped {name}")
-
+        Follower_data = Follower_data.drop([count])
+        Follower_data.to_csv("data/Instagram/data.csv",index=False)
+        count+=1
 
 
