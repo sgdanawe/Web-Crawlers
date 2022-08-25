@@ -1,3 +1,5 @@
+*.db
+.idea
+*.log
 *.env
 data
-
