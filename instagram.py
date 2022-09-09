@@ -1,3 +1,4 @@
+import time
 import instaloader
 import pandas as pd
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ def insta_scrapper(username_scrape):
     """Scrapes all media, followers, followee, post likes & post comments"""
     logger.info("Inside Scrapper function")
     try:
-        instance = instaloader.Instaloader(save_metadata=False, compress_json=False,post_metadata_txt_pattern=False,max_connection_attempts=5)
+        instance = instaloader.Instaloader(save_metadata=False, compress_json=False, max_connection_attempts=5)
 
         instance.login(user=os.environ['INSTA_USERNAME_1'], passwd=os.environ['INSTA_PASS_1'])
         profile = instaloader.Profile.from_username(instance.context, username=username_scrape)
