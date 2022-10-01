@@ -36,7 +36,7 @@ def insta_scrapper(username_scrape):
             writer.write(y)
         logger.info("DONE")
 
-        #list of all the follwers and followingt
+        #list of all the follwers and followings
         follow_list = []
         count = 0
         logger.info("Getting followers")
@@ -65,7 +65,7 @@ def insta_scrapper(username_scrape):
                 time.sleep(1000)
         print("Following list have been made\n")
         # To collect the list of all the liker and commenters
-        logger.info("Getting posts likers and commnters")
+        logger.info("Getting list likers and commnenters")
         for post in profile.get_posts():
             # print(post)
             list_likers = []
