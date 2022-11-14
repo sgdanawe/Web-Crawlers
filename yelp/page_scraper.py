@@ -77,11 +77,15 @@ def get_contact_details(html_tree):
         desc = html_tree.xpath(
             "//section[@class=' margin-b3__09f24__l9v5d border-color--default__09f24__NPAKY']/div[@class=' css-xp8w2v padding-t2__09f24__Y6duA padding-r2__09f24__ByXi4 padding-b2__09f24__F0z5y padding-l2__09f24__kf_t_ border--top__09f24__exYYb border--right__09f24__X7Tln border--bottom__09f24___mg5X border--left__09f24__DMOkM border-radius--regular__09f24__MLlCO background-color--white__09f24__ulvSM']")[
             0]
-        data["website"] = desc.xpath(".//a[@class='css-zyaz5k']/text()")[0]
+
+        data["website"] = desc.xpath(".//a[@class='css-1um3nx']/text()")[0]
+
         data["phone"] = desc.xpath(".//p[@class=' css-1p9ibgf']/text()")[0]
+
         data["address"] = desc.xpath(".//p[@class=' css-qyp8bo']/text()")[0]
         return data
-    except:
+    except Exception as e:
+        logging.info(e)
         return {}
 
 
@@ -129,7 +133,7 @@ if __name__ == "__main__":
     }
     s = Scraper(
         file_name="../data/yelp/result.db",
-        num_workers=4,
+        num_workers=1,
         query_generator=query_generator,
         query_scraper=query_scraper,
         dummy_data=dummy_data,

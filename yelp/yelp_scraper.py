@@ -41,19 +41,19 @@ def query_scraper(query):
         dct = {
             "service": query["find_desc"], "pincode": query["find_loc"],
             'img': first_el(el.xpath(".//img[@class=' css-xlzvdl']/@src")),
-            'name': first_el(el.xpath(".//a[@class='css-1kb4wkh']//text()")),
-            'link': first_el(el.xpath(".//a[@class='css-1kb4wkh']//@href")),
-            'rev_count': first_el(el.xpath(""".//span[@class='reviewCount__09f24__tnBk4 css-chan6m']//text()""")),
+            'name': first_el(el.xpath(".//a[@class='css-1m051bw']//text()")),
+            'link': first_el(el.xpath(".//a[@class='css-1m051bw']//@href")),
+            'rev_count': first_el(el.xpath(""".//span[@class=' css-chan6m']//text()""")),
             'tags': ','.join(el.xpath(".//button[@class='css-9dl18g']//span[@class='css-11bijt4']//text()")),
             'stars': first_el(el.xpath(
-                """.//div[@class=' i-stars__09f24__M1AR7 i-stars--regular-4__09f24__qui79 border-color--default__09f24__NPAKY overflow--hidden__09f24___ayzG']//@aria-label"""))
+                """.//div[@class=' five-stars__09f24__mBKym five-stars--regular__09f24__DgBNj display--inline-block__09f24__fEDiJ border-color--default__09f24__NPAKY']//@aria-label"""))
         }
 
         if dct["stars"] is not None:
             dct["stars"] = float(dct['stars'].split(" ")[0])
 
-        if dct["rev_count"] is not None:
-            dct["rev_count"] = int(dct["rev_count"])
+        # if dct["rev_count"] is not None:
+        #     dct["rev_count"] = int(dct["rev_count"])
 
         if dct["img"] is not None:
             cards.append(dct)
@@ -95,11 +95,11 @@ if __name__ == "__main__":
     }
     s = Scraper(
         file_name="../data/yelp/data.db",
-        num_workers=4,
+        num_workers=1,
         query_generator=query_generator,
         query_scraper=query_scraper,
         dummy_data=dummy_data,
-        cmt_interval=100,
+        cmt_interval=1,
         timeout=60
     )
     s.start_scraping()

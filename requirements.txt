@@ -1,3 +1,6 @@
 instaloader
 pandas
 python-dotenv
+pandas
+requests
+lxml
